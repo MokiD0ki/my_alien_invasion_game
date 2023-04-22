@@ -4,7 +4,7 @@ import pygame
 class Settings:
     def __init__(self):
         # Screen settings
-        self.screen_width = 1200
+        self.screen_width = 1400
         self.screen_height = 800
         self.bg_color = (230, 230, 230)
 
@@ -12,7 +12,7 @@ class Settings:
         self.icon_image = pygame.image.load('images/mokash_icon.png')
 
         # Ship settings
-        self.ship_speed = 0.5
+        self.ship_speed = 0.9
 
         # Bullet settings
         self.bullet_width = 3
@@ -20,3 +20,8 @@ class Settings:
         self.bullet_speed = 0.7
         self.bullet_color = (60, 60, 60)
         self.bullet_max = 3
+
+        # Alien settings
+        self.aliens_speed = 0.5
+        self.aliens_down_speed = 4
+        self.aliens_direction = 1
