@@ -6,6 +6,7 @@ from ship import Ship
 from bullet import Bullet
 from alien import Alien
 
+
 class AlienInvasion:
     def __init__(self):
         pygame.init()
@@ -64,7 +65,7 @@ class AlienInvasion:
         """Creates the army of aliens"""
         alien = Alien(self)
         self.aliens.add(alien)
-
+ 
         # Calculating how much aliens we can have on horizontal row
         max_aliens = self._alien_num_calculator(alien)
 

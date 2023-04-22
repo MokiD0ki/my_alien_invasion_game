@@ -2,11 +2,11 @@ import pygame
 
 
 class Ship:
-    def __init__(self, mi_game):
+    def __init__(self, my_game):
         """Initializing the ship and defining the starting position."""
-        self.screen = mi_game.screen
-        self.settings = mi_game.settings
-        self.screen_rect = mi_game.screen.get_rect()
+        self.screen = my_game.screen
+        self.settings = my_game.settings
+        self.screen_rect = my_game.screen.get_rect()
 
         self.image = pygame.image.load('images/dababy_mokash_ship.png')
         self.rect = self.image.get_rect()
