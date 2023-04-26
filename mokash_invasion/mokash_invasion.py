@@ -121,8 +121,12 @@ class AlienInvasion:
         self.aliens.update()
 
     def _update_bullets(self):
+        """update the position of bullets, remove extra bullets when
+                it collides with aliens or goes out of the screen"""
         self.bullets.update()
         self._remove_extra_bullets()
+
+        collisions = pygame.sprite.groupcollide(self.bullets, self.aliens, True, True)
 
     def _update_screen(self):
         """Update the images on screen and flips to the next screen"""
