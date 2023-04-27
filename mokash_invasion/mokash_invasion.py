@@ -1,10 +1,12 @@
 import sys
 import pygame
 
+from time import sleep
 from settings import Settings
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
+from game_stats import GameStats
 
 
 class AlienInvasion:
@@ -20,6 +22,8 @@ class AlienInvasion:
         pygame.display.set_caption("Mokash Invasion")
 
         self.ship = Ship(self)
+        self.stats = GameStats(self)
+        self.stats.game_active = True
         self.aliens = pygame.sprite.Group()
         self.bullets = pygame.sprite.Group()
 
@@ -29,9 +33,10 @@ class AlienInvasion:
         """All the processes tun here"""
         while True:
             self._check_events()
-            self.ship.move_update()
-            self._update_bullets()
-            self._update_aliens()
+            if self.stats.game_active:
+                self.ship.move_update()
+                self._update_bullets()
+                self._update_aliens()
             self._update_screen()
 
     def _check_events(self):
@@ -67,6 +72,22 @@ class AlienInvasion:
         for alien in self.aliens.sprites():
             if alien.edge_touching():
                 self._change_army_direction()
+                break
+
+    def _check_alien_bullet_collision(self):
+        """Function deletes colliding bullets, and creates new army if all aliens are dead"""
+        collisions = pygame.sprite.groupcollide(self.bullets, self.aliens, True, True)
+
+        if not self.aliens:
+            self.bullets.empty()
+            self._create_army()
+
+    def _check_aliens_reach_bottom(self):
+        """Check if aliens reach the bottom of the screen"""
+        screen_rect = self.screen.get_rect()
+        for alien in self.aliens.sprites():
+            if alien.rect.bottom >= screen_rect.bottom:
+                self._ship_destroy()
                 break
 
     def _change_army_direction(self):
@@ -120,13 +141,19 @@ class AlienInvasion:
         self._check_army_edge()
         self.aliens.update()
 
+        # find the aliens that touch the ship, start game with new live if so
+        if pygame.sprite.spritecollideany(self.ship, self.aliens):
+            self._ship_destroy()
+
+        # look for the aliens that touches the bottom
+        self._check_aliens_reach_bottom()
+
     def _update_bullets(self):
-        """update the position of bullets, remove extra bullets when
-                it collides with aliens or goes out of the screen"""
+        """Update the position of bullets, remove extra bullets when they
+        go out of the screen, check collision between bullets and aliens"""
         self.bullets.update()
         self._remove_extra_bullets()
-
-        collisions = pygame.sprite.groupcollide(self.bullets, self.aliens, True, True)
+        self._check_alien_bullet_collision()
 
     def _update_screen(self):
         """Update the images on screen and flips to the next screen"""
@@ -137,6 +164,25 @@ class AlienInvasion:
         self.aliens.draw(self.screen)
 
         pygame.display.update()
+
+    def _ship_destroy(self):
+        """Respond when ship is destroyed"""
+        if self.stats.ship_live_count == 0:
+            self.stats.game_active = False
+            return
+
+        self.stats.ship_live_count -= 1
+
+        # Remove bullets and aliens
+        self.aliens.empty()
+        self.bullets.empty()
+
+        # Set everything for the new start
+        self._create_army()
+        self.ship.center_ship()
+
+        # Add a little delay
+        sleep(0.5)
 
 
 if __name__ == '__main__':
