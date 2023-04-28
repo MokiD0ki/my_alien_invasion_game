@@ -12,6 +12,7 @@ from game_stats import GameStats
 class AlienInvasion:
     def __init__(self):
         pygame.init()
+        self.clock = pygame.time.Clock()
         self.settings = Settings()
 
         pygame.display.set_icon(self.settings.icon_image)
@@ -38,6 +39,8 @@ class AlienInvasion:
                 self._update_bullets()
                 self._update_aliens()
             self._update_screen()
+            # Limiting the max fps
+            self.clock.tick(self.settings.max_fps)
 
     def _check_events(self):
         """Respond to the pushed keys and other events"""
@@ -158,7 +161,7 @@ class AlienInvasion:
     def _update_screen(self):
         """Update the images on screen and flips to the next screen"""
         self.screen.fill(self.settings.bg_color)
-        self.ship.blitme()
+        self.ship.blit_me()
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
         self.aliens.draw(self.screen)
