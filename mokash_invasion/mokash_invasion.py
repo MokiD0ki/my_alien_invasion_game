@@ -7,6 +7,7 @@ from ship import Ship
 from bullet import Bullet
 from alien import Alien
 from game_stats import GameStats
+from button import Button
 
 
 class AlienInvasion:
@@ -24,11 +25,14 @@ class AlienInvasion:
 
         self.ship = Ship(self)
         self.stats = GameStats(self)
-        self.stats.game_active = True
+        # self.stats.game_active = True
         self.aliens = pygame.sprite.Group()
         self.bullets = pygame.sprite.Group()
 
         self._create_army()
+
+        # create Play button
+        self.play_button = Button(self, 'Play')
 
     def run_game(self):
         """All the processes tun here"""
@@ -39,7 +43,7 @@ class AlienInvasion:
                 self._update_bullets()
                 self._update_aliens()
             self._update_screen()
-            # Limiting the max fps
+            # Limit the max fps
             self.clock.tick(self.settings.max_fps)
 
     def _check_events(self):
@@ -51,6 +55,15 @@ class AlienInvasion:
                 self._check_keydown_event(event)
             elif event.type == pygame.KEYUP:
                 self._check_keyup_event(event)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                self._check_play_button(mouse_pos)
+
+    def _check_play_button(self, mouse_pos):
+        # start the game if play button pushed
+        if self.play_button.rect.collidepoint(mouse_pos):
+            self.stats.stats_reset()
+            self.stats.game_active = True
 
     def _check_keydown_event(self, event):
         """Check the keys that was pushed"""
@@ -161,10 +174,15 @@ class AlienInvasion:
     def _update_screen(self):
         """Update the images on screen and flips to the next screen"""
         self.screen.fill(self.settings.bg_color)
-        self.ship.blit_me()
-        for bullet in self.bullets.sprites():
-            bullet.draw_bullet()
-        self.aliens.draw(self.screen)
+
+        # Draw the 'Play' button if game is not active
+        if self.stats.game_active:
+            self.ship.blit_me()
+            for bullet in self.bullets.sprites():
+                bullet.draw_bullet()
+            self.aliens.draw(self.screen)
+        else:
+            self.play_button.draw_button()
 
         pygame.display.update()
 
