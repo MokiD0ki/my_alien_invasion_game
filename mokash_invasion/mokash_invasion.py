@@ -25,13 +25,12 @@ class AlienInvasion:
 
         self.ship = Ship(self)
         self.stats = GameStats(self)
-        # self.stats.game_active = True
         self.aliens = pygame.sprite.Group()
         self.bullets = pygame.sprite.Group()
 
         self._create_army()
 
-        # create Play button
+        # Create Play button
         self.play_button = Button(self, 'Play')
 
     def run_game(self):
@@ -62,14 +61,18 @@ class AlienInvasion:
     def _check_play_button(self, mouse_pos):
         """Start new game if play button pushed"""
         if self.play_button.rect.collidepoint(mouse_pos):
-            # reset statistics
+            # Hide mouse cursor
+            pygame.mouse.set_visible(False)
+            # Reset statistics
             self.stats.stats_reset()
             self.stats.game_active = True
-            # player can start game again after losing,
+            # Reset speed of the game
+            self.settings.init_dynamic_settings()
+            # Player can start game again after losing,
             # so we need to get rid of aliens and bullets from previous game
             self.aliens.empty()
             self.bullets.empty()
-            # set everything for new game
+            # Set everything for new game
             self._create_army()
 
     def _check_keydown_event(self, event):
@@ -104,6 +107,8 @@ class AlienInvasion:
         if not self.aliens:
             self.bullets.empty()
             self._create_army()
+            # Increase difficulty after destroying whole army
+            self.settings.increase_difficulty()
 
     def _check_aliens_reach_bottom(self):
         """Check if aliens reach the bottom of the screen"""
@@ -164,11 +169,11 @@ class AlienInvasion:
         self._check_army_edge()
         self.aliens.update()
 
-        # find the aliens that touch the ship, start game with new live if so
+        # Find the aliens that touch the ship, start game with new live if so
         if pygame.sprite.spritecollideany(self.ship, self.aliens):
             self._ship_destroy()
 
-        # look for the aliens that touches the bottom
+        # Look for the aliens that touches the bottom
         self._check_aliens_reach_bottom()
 
     def _update_bullets(self):
@@ -195,8 +200,12 @@ class AlienInvasion:
 
     def _ship_destroy(self):
         """Respond when ship is destroyed"""
+
+        # Deactivate game if we don't have lives
         if self.stats.ship_live_count == 0:
             self.stats.game_active = False
+            # Make cursor visible again
+            pygame.mouse.set_visible(True)
             return
 
         self.stats.ship_live_count -= 1

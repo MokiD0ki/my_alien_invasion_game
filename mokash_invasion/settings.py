@@ -13,17 +13,33 @@ class Settings:
         self.icon_image = pygame.image.load('images/mokash_icon.png')
 
         # Ship settings
-        self.ship_speed = 3
-        self.ship_limit = 1
+        self.ship_limit = 3
 
         # Bullet settings
         self.bullet_width = 3
         self.bullet_height = 15
-        self.bullet_speed = 3
         self.bullet_color = (60, 60, 60)
         self.bullet_max = 3
 
         # Alien settings
+        self.aliens_down_speed = 5
+
+        # Game progression
+        self.speed_progression = 1.2
+
+        self.init_dynamic_settings()
+
+    def init_dynamic_settings(self):
+        """Initialize settings that change during the game"""
+        self.ship_speed = 3
         self.aliens_speed = 2.5
-        self.aliens_down_speed = 50
+        self.bullet_speed = 3
+
+        # Aliens move right when 1 and left when -1
         self.aliens_direction = 1
+
+    def increase_difficulty(self):
+        """Increase difficulty by increasing speed of aliens"""
+        self.aliens_speed *= self.speed_progression
+        self.ship_speed *= self.speed_progression
+        self.bullet_speed *= self.speed_progression

@@ -15,6 +15,7 @@ class Bullet(Sprite):
         self.y = float(self.rect.y)
 
     def update(self):
+        """Update the position of the bullet"""
         self.y -= self.settings.bullet_speed
         self.rect.y = self.y
 

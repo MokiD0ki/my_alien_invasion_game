@@ -7,7 +7,7 @@ class Button:
         self.screen = my_game.screen
         self.screen_rect = my_game.screen.get_rect()
 
-        # set the button properties
+        # Set the button properties
         self.width, self.height = 200, 50
         self.button_color = (0, 0, 0)
         self.text_color = (255, 255, 255)
