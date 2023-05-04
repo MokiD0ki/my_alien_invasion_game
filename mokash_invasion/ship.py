@@ -8,8 +8,12 @@ class Ship:
         self.settings = my_game.settings
         self.screen_rect = my_game.screen.get_rect()
 
-        self.image = pygame.image.load('images/dababy_mokash_ship.png')
-        self.rect = self.image.get_rect()
+        # Different images for the left and right direction of ship
+        self.image_face_left = pygame.image.load('images/dababy_mokash_ship_left.png')
+        self.image_face_right = pygame.image.load('images/dababy_mokash_ship_right.png')
+        self.image = self.image_face_left
+
+        self.rect = self.image_face_left.get_rect()
         self.rect.midbottom = self.screen_rect.midbottom
 
         # Storing the initial horizontal position of ship
@@ -26,8 +30,12 @@ class Ship:
     def move_update(self):
         if self.moving_right and self.rect.right < self.screen_rect.right:
             self.x += self.settings.ship_speed
+            # Change image to right facing picture when moving right
+            self.image = self.image_face_right
         if self.moving_left and self.rect.left > 0:
             self.x -= self.settings.ship_speed
+            # Change image to right facing picture when moving left
+            self.image = self.image_face_left
 
         self.rect.x = self.x
 

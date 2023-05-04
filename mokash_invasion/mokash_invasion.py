@@ -35,7 +35,7 @@ class AlienInvasion:
         self.play_button = Button(self, 'Play')
 
     def run_game(self):
-        """All the processes tun here"""
+        """All the processes run here"""
         while True:
             self._check_events()
             if self.stats.game_active:
@@ -60,10 +60,17 @@ class AlienInvasion:
                 self._check_play_button(mouse_pos)
 
     def _check_play_button(self, mouse_pos):
-        # start the game if play button pushed
+        """Start new game if play button pushed"""
         if self.play_button.rect.collidepoint(mouse_pos):
+            # reset statistics
             self.stats.stats_reset()
             self.stats.game_active = True
+            # player can start game again after losing,
+            # so we need to get rid of aliens and bullets from previous game
+            self.aliens.empty()
+            self.bullets.empty()
+            # set everything for new game
+            self._create_army()
 
     def _check_keydown_event(self, event):
         """Check the keys that was pushed"""
