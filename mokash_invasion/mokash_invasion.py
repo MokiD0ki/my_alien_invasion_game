@@ -8,6 +8,7 @@ from bullet import Bullet
 from alien import Alien
 from game_stats import GameStats
 from button import Button
+from scoreboard import Scoreboard
 
 
 class AlienInvasion:
@@ -25,6 +26,7 @@ class AlienInvasion:
 
         self.ship = Ship(self)
         self.stats = GameStats(self)
+        self.scoreboard = Scoreboard(self)
         self.aliens = pygame.sprite.Group()
         self.bullets = pygame.sprite.Group()
 
@@ -74,6 +76,7 @@ class AlienInvasion:
             self.bullets.empty()
             # Set everything for new game
             self._create_army()
+            self.scoreboard.manage_score()
 
     def _check_keydown_event(self, event):
         """Check the keys that was pushed"""
@@ -103,6 +106,12 @@ class AlienInvasion:
     def _check_alien_bullet_collision(self):
         """Function deletes colliding bullets, and creates new army if all aliens are dead"""
         collisions = pygame.sprite.groupcollide(self.bullets, self.aliens, True, True)
+
+        # Add points for eliminated aliens
+        if collisions:
+            for dead_aliens in collisions.values():
+                self.stats.score += self.settings.alien_points * len(dead_aliens)
+            self.scoreboard.manage_score()
 
         if not self.aliens:
             self.bullets.empty()
@@ -189,6 +198,7 @@ class AlienInvasion:
 
         # Draw the 'Play' button if game is not active
         if self.stats.game_active:
+            self.scoreboard.display_score()
             self.ship.blit_me()
             for bullet in self.bullets.sprites():
                 bullet.draw_bullet()

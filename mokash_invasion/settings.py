@@ -26,6 +26,14 @@ class Settings:
 
         # Game progression
         self.speed_progression = 1.2
+        self.score_progression = 1.5
+
+        # Dynamic settings
+        self.ship_speed = 0
+        self.aliens_speed = 0
+        self.bullet_speed = 0
+        self.aliens_direction = 0
+        self.alien_points = 0
 
         self.init_dynamic_settings()
 
@@ -38,8 +46,12 @@ class Settings:
         # Aliens move right when 1 and left when -1
         self.aliens_direction = 1
 
+        # Scoring
+        self.alien_points = 20
+
     def increase_difficulty(self):
         """Increase difficulty by increasing speed of aliens"""
         self.aliens_speed *= self.speed_progression
         self.ship_speed *= self.speed_progression
         self.bullet_speed *= self.speed_progression
+        self.alien_points = int(self.alien_points * self.score_progression)
