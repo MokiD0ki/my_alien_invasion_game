@@ -1,5 +1,6 @@
 import sys
 import pygame
+import random
 
 from time import sleep
 from settings import Settings
@@ -22,7 +23,7 @@ class AlienInvasion:
         # self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         # self.settings.screen_width = self.screen.get_rect().width
         # self.settings.screen_height = self.screen.get_rect().height
-        pygame.display.set_caption("Mokash Invasion")
+        pygame.display.set_caption("Alien Invasion")
 
         self.ship = Ship(self)
         self.stats = GameStats(self)
@@ -56,7 +57,7 @@ class AlienInvasion:
                 self._check_keydown_event(event)
             elif event.type == pygame.KEYUP:
                 self._check_keyup_event(event)
-            elif event.type == pygame.MOUSEBUTTONDOWN:
+            elif not self.stats.game_active and event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
                 self._check_play_button(mouse_pos)
 
@@ -77,6 +78,7 @@ class AlienInvasion:
             # Set everything for new game
             self._create_army()
             self.scoreboard.manage_score()
+            self.scoreboard.manage_lives()
 
     def _check_keydown_event(self, event):
         """Check the keys that was pushed"""
@@ -210,6 +212,10 @@ class AlienInvasion:
 
     def _ship_destroy(self):
         """Respond when ship is destroyed"""
+        self.stats.ship_live_count -= 1
+
+        # Change number of lives on scoreboard
+        self.scoreboard.manage_lives()
 
         # Deactivate game if we don't have lives
         if self.stats.ship_live_count == 0:
@@ -217,8 +223,6 @@ class AlienInvasion:
             # Make cursor visible again
             pygame.mouse.set_visible(True)
             return
-
-        self.stats.ship_live_count -= 1
 
         # Remove bullets and aliens
         self.aliens.empty()
