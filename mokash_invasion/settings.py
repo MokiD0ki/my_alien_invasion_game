@@ -12,6 +12,9 @@ class Settings:
         # Icon settings
         self.icon_image = pygame.image.load('images/mokash_icon.png')
 
+        # Game font
+        self.custom_font = pygame.font.Font('fonts/Pixeltype.ttf', 48)
+
         # Ship settings
         self.ship_limit = 3
 
