@@ -27,6 +27,9 @@ class Settings:
         # Alien settings
         self.aliens_down_speed = 5
 
+        # Item settings
+        self.item_down_speed = 3
+
         # Game progression
         self.speed_progression = 1.2
         self.score_progression = 1.5

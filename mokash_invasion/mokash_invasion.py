@@ -10,6 +10,7 @@ from alien import Alien
 from game_stats import GameStats
 from button import Button
 from scoreboard import Scoreboard
+import upgrade_items
 
 
 class AlienInvasion:
@@ -30,6 +31,7 @@ class AlienInvasion:
         self.scoreboard = Scoreboard(self)
         self.aliens = pygame.sprite.Group()
         self.bullets = pygame.sprite.Group()
+        self.upgrades = pygame.sprite.Group()
 
         self._create_army()
 
@@ -44,6 +46,7 @@ class AlienInvasion:
                 self.ship.move_update()
                 self._update_bullets()
                 self._update_aliens()
+                self._update_upgrades()
             self._update_screen()
             # Limit the max fps
             self.clock.tick(self.settings.max_fps)
@@ -106,12 +109,16 @@ class AlienInvasion:
                 break
 
     def _check_alien_bullet_collision(self):
-        """Function deletes colliding bullets, and creates new army if all aliens are dead"""
+        """Function delete colliding bullets, and create new army if all aliens are dead,
+        also with a certain probability create upgrades"""
         collisions = pygame.sprite.groupcollide(self.bullets, self.aliens, True, True)
 
         # Add points for eliminated aliens
         if collisions:
             for dead_aliens in collisions.values():
+                if random.randint(1, 10) == 7:
+                    new_upgrade = upgrade_items.BulletSpeedUpgrade(self, dead_aliens[0])
+                    self.upgrades.add(new_upgrade)
                 self.stats.score += self.settings.alien_points * len(dead_aliens)
             self.scoreboard.manage_score()
 
@@ -120,6 +127,12 @@ class AlienInvasion:
             self._create_army()
             # Increase difficulty after destroying whole army
             self.settings.increase_difficulty()
+
+    def _check_upgrade_ship_collision(self):
+        for upgrade in self.upgrades.sprites():
+            if self.ship.rect.colliderect(upgrade.rect):
+                upgrade.activate_upgrade()
+                upgrade.kill()
 
     def _check_aliens_reach_bottom(self):
         """Check if aliens reach the bottom of the screen"""
@@ -170,12 +183,6 @@ class AlienInvasion:
             new_bullet = Bullet(self)
             self.bullets.add(new_bullet)
 
-    def _remove_extra_bullets(self):
-        """Remove bullets that are behind the screen"""
-        for bullet in self.bullets.copy():
-            if bullet.rect.bottom <= 0:
-                self.bullets.remove(bullet)
-
     def _update_aliens(self):
         self._check_army_edge()
         self.aliens.update()
@@ -194,6 +201,13 @@ class AlienInvasion:
         self._remove_extra_bullets()
         self._check_alien_bullet_collision()
 
+    def _update_upgrades(self):
+        """Update the position of upgrades, remove extra upgrades when they
+         go out of the screen, check collisions between upgrades and ship"""
+        self.upgrades.update()
+        self._remove_extra_upgrades()
+        self._check_upgrade_ship_collision()
+
     def _update_screen(self):
         """Update the images on screen and flips to the next screen"""
         self.screen.fill(self.settings.bg_color)
@@ -204,11 +218,25 @@ class AlienInvasion:
             self.ship.blit_me()
             for bullet in self.bullets.sprites():
                 bullet.draw_bullet()
+            for upgrade in self.upgrades.sprites():
+                upgrade.draw_upgrade()
             self.aliens.draw(self.screen)
         else:
             self.play_button.draw_button()
 
         pygame.display.update()
+
+    def _remove_extra_bullets(self):
+        """Remove bullets that are behind the screen"""
+        for bullet in self.bullets.copy():
+            if bullet.rect.bottom <= 0:
+                self.bullets.remove(bullet)
+
+    def _remove_extra_upgrades(self):
+        """Remove upgrades that are behind the screen"""
+        for upgrade in self.upgrades:
+            if upgrade.rect.top == self.screen.get_rect().bottom:
+                self.upgrades.remove(upgrade)
 
     def _ship_destroy(self):
         """Respond when ship is destroyed"""
