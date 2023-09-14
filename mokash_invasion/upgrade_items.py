@@ -8,6 +8,7 @@ class UpgradeItem(Sprite):
         super().__init__()
         self.settings = mygame.settings
         self.screen = mygame.screen
+        self.scoreboard = mygame.scoreboard
         self.color = item_color
 
         self.rect = pygame.Rect(0, 0, size_x, size_y)
@@ -29,4 +30,20 @@ class BulletSpeedUpgrade(UpgradeItem):
         super().__init__(mygame, 'green', 30, 30, alien)
 
     def activate_upgrade(self):
-        self.settings.bullet_speed += 2
+        if self.settings.bullet_speed < self.settings.bullet_speed_limit:
+            self.settings.bullet_speed += 2
+        else:
+            # Add points if bullet speed reach the maximum
+            self.scoreboard.add_points(1000)
+
+
+class ShipSpeedUpgrade(UpgradeItem):
+    def __init__(self, mygame, alien):
+        super().__init__(mygame, 'red', 30, 30, alien)
+
+    def activate_upgrade(self):
+        if self.settings.ship_speed < self.settings.ship_speed_limit:
+            self.settings.ship_speed += 2
+        else:
+            # Add points if ship speed reach the maximum
+            self.scoreboard.add_points(1000)

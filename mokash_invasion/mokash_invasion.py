@@ -116,12 +116,15 @@ class AlienInvasion:
         # Add points for eliminated aliens
         if collisions:
             for dead_aliens in collisions.values():
-                if random.randint(1, 10) == 7:
-                    new_upgrade = upgrade_items.BulletSpeedUpgrade(self, dead_aliens[0])
-                    self.upgrades.add(new_upgrade)
+                # By a certain chance create upgrade
+                if random.randint(1, 20) == 7:
+                    self._create_upgrade(dead_aliens)
+
+                # Add points for dead aliens
                 self.stats.score += self.settings.alien_points * len(dead_aliens)
             self.scoreboard.manage_score()
 
+        # When all aliens are dead, new wave appears
         if not self.aliens:
             self.bullets.empty()
             self._create_army()
@@ -129,6 +132,7 @@ class AlienInvasion:
             self.settings.increase_difficulty()
 
     def _check_upgrade_ship_collision(self):
+        """Check if ship touch the upgrade, activate upgrade if so"""
         for upgrade in self.upgrades.sprites():
             if self.ship.rect.colliderect(upgrade.rect):
                 upgrade.activate_upgrade()
@@ -153,6 +157,13 @@ class AlienInvasion:
         alien_width = alien.rect.width
         free_space_x = self.settings.screen_width - (2 * alien_width)
         return free_space_x // (alien_width * 2)
+
+    def _create_upgrade(self, alien):
+        """Create random upgrade and place it where alien died"""
+        upgrades = [upgrade_items.BulletSpeedUpgrade(self, alien[0]),
+                    upgrade_items.ShipSpeedUpgrade(self, alien[0])]
+        new_upgrade = random.choice(upgrades)
+        self.upgrades.add(new_upgrade)
 
     def _create_army(self):
         """Create 3 rows of aliens"""
@@ -184,6 +195,7 @@ class AlienInvasion:
             self.bullets.add(new_bullet)
 
     def _update_aliens(self):
+        """Update aliens position"""
         self._check_army_edge()
         self.aliens.update()
 

@@ -17,12 +17,14 @@ class Settings:
 
         # Ship settings
         self.ship_limit = 3
+        self.ship_speed_limit = 10
 
         # Bullet settings
         self.bullet_width = 3
         self.bullet_height = 15
         self.bullet_color = (60, 60, 60)
         self.bullet_max = 3
+        self.bullet_speed_limit = 10
 
         # Alien settings
         self.aliens_down_speed = 5
@@ -58,6 +60,4 @@ class Settings:
     def increase_difficulty(self):
         """Increase difficulty by increasing speed of aliens"""
         self.aliens_speed *= self.speed_progression
-        self.ship_speed *= self.speed_progression
-        self.bullet_speed *= self.speed_progression
         self.alien_points = int(self.alien_points * self.score_progression)

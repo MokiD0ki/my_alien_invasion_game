@@ -37,6 +37,10 @@ class Scoreboard:
         self.lives_rect.left = self.screen_rect.left + 20
         self.lives_rect.top = 24
 
+    def add_points(self, points_number):
+        self.stats.score += points_number
+        self.manage_score()
+
     def display_score(self):
         self.screen.blit(self.score_image, self.score_rect)
         self.screen.blit(self.lives_image, self.lives_rect)
