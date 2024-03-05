@@ -7,7 +7,7 @@ class Alien(Sprite):
         super().__init__()
         self.screen = my_game.screen
         self.settings = my_game.settings
-        self.image = pygame.image.load('images/mokash_alien.png')
+        self.image = pygame.image.load('mokash_invasion/images/mokash_alien.png')
         self.rect = self.image.get_rect()
 
         self.rect.x = self.rect.width

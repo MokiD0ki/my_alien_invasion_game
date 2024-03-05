@@ -9,8 +9,8 @@ class Ship:
         self.screen_rect = my_game.screen.get_rect()
 
         # Different images for the left and right direction of ship
-        self.image_face_left = pygame.image.load('images/dababy_mokash_ship_left.png')
-        self.image_face_right = pygame.image.load('images/dababy_mokash_ship_right.png')
+        self.image_face_left = pygame.image.load('mokash_invasion/images/dababy_mokash_ship_left.png')
+        self.image_face_right = pygame.image.load('mokash_invasion/images/dababy_mokash_ship_right.png')
         self.image = self.image_face_left
 
         self.rect = self.image_face_left.get_rect()

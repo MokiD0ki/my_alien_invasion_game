@@ -10,10 +10,10 @@ class Settings:
         self.max_fps = 120
 
         # Icon settings
-        self.icon_image = pygame.image.load('images/mokash_icon.png')
+        self.icon_image = pygame.image.load('mokash_invasion/images/mokash_icon.png')
 
         # Game font
-        self.custom_font = pygame.font.Font('fonts/Pixeltype.ttf', 48)
+        self.custom_font = pygame.font.Font('mokash_invasion/fonts/Pixeltype.ttf', 48)
 
         # Ship settings
         self.ship_limit = 3
